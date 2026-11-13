@@ -16,7 +16,7 @@ namespace GrupoR
     {
         public int DirX { get; }
         public int DirY { get; }
-        public int DistBucket { get; }
+        public int Distancia { get; }
         public bool WallUp { get; }
         public bool WallDown { get; }
         public bool WallLeft { get; }
@@ -29,7 +29,7 @@ namespace GrupoR
 
             DirX = Sign(dx);
             DirY = Sign(dy);
-            DistBucket = Bucket(System.Math.Abs(dx) + System.Math.Abs(dy));
+            Distancia = Rango(System.Math.Abs(dx) + System.Math.Abs(dy));
 
             WallUp = IsBlocked(worldInfo, agent.x, agent.y + 1);
             WallDown = IsBlocked(worldInfo, agent.x, agent.y - 1);
@@ -43,7 +43,7 @@ namespace GrupoR
         /// </summary>
         public string ToKey()
         {
-            return $"{DirX},{DirY}|{DistBucket}|{B(WallUp)}{B(WallDown)}{B(WallLeft)}{B(WallRight)}";
+            return $"{DirX},{DirY}|{Distancia}|{B(WallUp)}{B(WallDown)}{B(WallLeft)}{B(WallRight)}";
         }
 
         /// <summary>Casilla no transitable: fuera del tablero o con muro.</summary>
@@ -57,7 +57,7 @@ namespace GrupoR
 
         private static int Sign(int v) => v > 0 ? 1 : (v < 0 ? -1 : 0);
 
-        private static int Bucket(int d)
+        private static int Rango(int d)
         {
             if (d <= 1) return 0;
             if (d == 2) return 1;
