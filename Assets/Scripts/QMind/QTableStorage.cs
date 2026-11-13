@@ -48,7 +48,7 @@ namespace QMind
                 if (string.IsNullOrWhiteSpace(ns)) continue;
 
                 if (ns.StartsWith("Grupo", StringComparison.Ordinal))
-                    return ns.Split('.')[0]; // "GrupoA"
+                    return ns.Split('.')[0]; // "GrupoR"
             }
 
             return null;

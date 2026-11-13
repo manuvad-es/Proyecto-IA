@@ -1,6 +1,6 @@
 using NavigationDJIA.World;
 
-namespace GrupoA
+namespace GrupoR
 {
     /// <summary>
     /// Estado del agente para la Tabla Q. No usa posiciones absolutas, sólo información

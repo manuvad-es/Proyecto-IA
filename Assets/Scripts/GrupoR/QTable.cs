@@ -1,7 +1,7 @@
 using System;
 using QMind;
 
-namespace GrupoA
+namespace GrupoR
 {
     /// <summary>
     /// Tabla de calidad Q(s, a). Cada fila del diccionario es un estado (clave de QState.ToKey())

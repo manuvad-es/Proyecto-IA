@@ -5,7 +5,7 @@ using QMind;
 using QMind.Interfaces;
 using UnityEngine;
 
-namespace GrupoA
+namespace GrupoR
 {
     public class QMindTrainer : IQMindTrainer
     {
@@ -186,7 +186,7 @@ namespace GrupoA
             if (agent.Equals(other))
                 return -100f;
 
-            int distance = Math.Abs(agent.x - other.x) + Math.Abs(agent.y - other.y);
+            float distance = agent.Distance(other, CellInfo.DistanceType.Manhattan);
             float reward = 1f + 0.1f * Math.Min(distance, 10);
 
             if (distance <= 2) reward -= 2f;
