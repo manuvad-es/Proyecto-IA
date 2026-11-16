@@ -36,8 +36,7 @@ namespace GrupoR
             return state.ToKey();
         }
 
-        // Si la acción lleva a un muro o fuera del tablero, el agente se queda donde está
-        // (mismo comportamiento que en el entrenamiento).
+        // Si la acción lleva a un muro o fuera del tablero, el agente se queda quieto
         private CellInfo ApplyAction(CellInfo agentCell, QAction action)
         {
             int nx = agentCell.x;

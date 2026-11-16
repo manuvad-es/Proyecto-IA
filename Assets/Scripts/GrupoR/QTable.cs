@@ -3,10 +3,7 @@ using QMind;
 
 namespace GrupoR
 {
-    /// <summary>
-    /// Tabla de calidad Q(s, a). Cada fila del diccionario es un estado (clave de QState.ToKey())
-    /// y el array de floats contiene un valor Q por acción, indexado por (int)QAction.
-    /// </summary>
+    // Tabla de calidad Q(s, a). Cada fila del diccionario es un estado del ToKey
     public class QTable
     {
         private readonly QTableStorage _storage;
@@ -26,21 +23,21 @@ namespace GrupoR
             }
         }
 
-        /// <summary>Devuelve Q(s, a).</summary>
+        // Devuelve Q(s, a)
         public float GetQ(string stateKey, QAction action)
         {
             EnsureState(stateKey);
             return _storage.Data[stateKey][(int)action];
         }
 
-        /// <summary>Asigna Q(s, a) = value.</summary>
+        // Asigna Q(s, a) el valor
         public void SetQ(string stateKey, QAction action, float value)
         {
             EnsureState(stateKey);
             _storage.Data[stateKey][(int)action] = value;
         }
 
-        /// <summary>Devuelve max_a Q(s, a).</summary>
+        // Devuelve max_a Q(s, a)
         public float GetMaxQ(string stateKey)
         {
             EnsureState(stateKey);
@@ -54,7 +51,7 @@ namespace GrupoR
             return max;
         }
 
-        /// <summary>Devuelve argmax_a Q(s, a). En caso de empate, la primera acción.</summary>
+        // Devuelve argmax_a Q(s, a). En caso de ser iguales, la primera acción
         public QAction GetBestAction(string stateKey)
         {
             EnsureState(stateKey);

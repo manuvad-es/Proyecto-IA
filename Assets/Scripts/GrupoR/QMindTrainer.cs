@@ -9,7 +9,6 @@ namespace GrupoR
 {
     public class QMindTrainer : IQMindTrainer
     {
-        private const float MinEpsilon = 0.05f;
 
         private QMindTrainerParams _params;
         private WorldInfo _worldInfo;
@@ -135,37 +134,20 @@ namespace GrupoR
             return state.ToKey();
         }
 
-        /// <summary>
-        /// Política epsilon-greedy: con probabilidad epsilon acción aleatoria (explorar),
-        /// si no, la mejor acción según la tabla (explotar).
-        /// </summary>
+
+        // Probabilidad de explorar, pero si alguna de la tabla es mayor, se elige la de la tabla
         private QAction ChooseAction(string stateKey, bool train)
         {
             if (!train)
                 return _qTable.GetBestAction(stateKey);
 
-            if (_random.NextDouble() < CurrentEpsilon())
+            if (_random.NextDouble() < _params.epsilon)
                 return (QAction)_random.Next(5);
 
             return _qTable.GetBestAction(stateKey);
         }
 
-        /// <summary>
-        /// Epsilon decae linealmente desde _params.epsilon hasta MinEpsilon
-        /// a lo largo de los episodios de entrenamiento.
-        /// </summary>
-        private float CurrentEpsilon()
-        {
-            if (_params.episodes <= 0)
-                return _params.epsilon;
-
-            float progress = (float)(CurrentEpisode - 1) / _params.episodes;
-            return Mathf.Max(MinEpsilon, _params.epsilon * (1f - progress));
-        }
-
-        /// <summary>
-        /// Q(s,a) = (1 - alpha) * Q(s,a) + alpha * (reward + gamma * max_a' Q(s',a')).
-        /// </summary>
+        // Q(s,a) = (1 - alpha) * Q(s,a) + alpha * (r + gamma * max_a' Q(s',a'))
         private void UpdateQ(string stateKey, QAction action, float reward, string nextStateKey)
         {
             float oldQ = _qTable.GetQ(stateKey, action);
@@ -175,12 +157,9 @@ namespace GrupoR
             _qTable.SetQ(stateKey, action, newQ);
         }
 
-        /// <summary>
-        /// -100 si el enemigo captura al agente.
-        /// Si sobrevive: +1 más 0.1 por casilla de distancia al enemigo (hasta 10),
-        /// de modo que la recompensa disminuye cuanto más cerca está el enemigo.
-        /// Si el enemigo está a 1 casilla, se restan 5 puntos (zona de peligro).
-        /// </summary>
+        // -100 si el enemigo captura al agente.
+        // Si sobrevive, +1 más 0.1 por casilla de distancia al enemigo
+        // Si el enemigo esta a 2 o menos de distancia se le resta 2
         private float ComputeReward(CellInfo agent, CellInfo other)
         {
             if (agent.Equals(other))
@@ -194,17 +173,14 @@ namespace GrupoR
             return reward;
         }
 
-        /// <summary>
-        /// El episodio termina cuando el enemigo alcanza la casilla del agente.
-        /// </summary>
+        // El episodio termina cuando el enemigo alcanza la casilla del agente
         private bool IsTerminalState(CellInfo agent, CellInfo other)
         {
             return agent.Equals(other);
         }
 
-        /// <summary>
-        /// Si la acción lleva a un muro o fuera del tablero, el agente se queda en su casilla.
-        /// </summary>
+
+        // Si la acción lleva a un muro o fuera del tablero, el agente se queda quieto
         private CellInfo ApplyAction(CellInfo agentCell, QAction action)
         {
             int nx = agentCell.x;

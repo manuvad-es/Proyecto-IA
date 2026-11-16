@@ -2,16 +2,7 @@ using NavigationDJIA.World;
 
 namespace GrupoR
 {
-    /// <summary>
-    /// Estado del agente para la Tabla Q. No usa posiciones absolutas, sólo información
-    /// relativa y local, para que generalice a cualquier distribución de muros:
-    ///   - DirX, DirY: dirección (signo -1/0/1) en la que está el enemigo respecto al agente.
-    ///   - DistBucket: distancia Manhattan al enemigo discretizada en 5 rangos
-    ///                 (0: <=1, 1: 2, 2: 3-4, 3: 5-7, 4: >=8).
-    ///   - WallUp/Down/Left/Right: si la casilla vecina en cada dirección está bloqueada
-    ///                 (muro o fuera del tablero).
-    /// Total: 9 direcciones x 5 distancias x 16 combinaciones de muros = 720 estados posibles.
-    /// </summary>
+    // Estado del agente, dónde esta el enemigo, la distancia y si hay muros o está el límite del mapa cerca
     public sealed class QState
     {
         public int DirX { get; }
@@ -22,6 +13,7 @@ namespace GrupoR
         public bool WallLeft { get; }
         public bool WallRight { get; }
 
+        // Cálculo de los valores del estado
         public QState(CellInfo agent, CellInfo other, WorldInfo worldInfo)
         {
             int dx = other.x - agent.x;
@@ -37,16 +29,13 @@ namespace GrupoR
             WallRight = IsBlocked(worldInfo, agent.x + 1, agent.y);
         }
 
-        /// <summary>
-        /// Clave única del estado, p. ej. "1,-1|2|0100".
-        /// Los bits de muros siguen el orden Up, Down, Left, Right.
-        /// </summary>
+        // Clave única del estado por ejemplo: "1,-1|2|0100"
         public string ToKey()
         {
             return $"{DirX},{DirY}|{Distancia}|{B(WallUp)}{B(WallDown)}{B(WallLeft)}{B(WallRight)}";
         }
 
-        /// <summary>Casilla no transitable: fuera del tablero o con muro.</summary>
+        // Comprobar fuera del tablero o casilla con muro
         public static bool IsBlocked(WorldInfo worldInfo, int x, int y)
         {
             if (x < 0 || y < 0 || x >= worldInfo.WorldSize.x || y >= worldInfo.WorldSize.y)
