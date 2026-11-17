@@ -150,11 +150,11 @@ namespace GrupoR
         // Q(s,a) = (1 - alpha) * Q(s,a) + alpha * (r + gamma * max_a' Q(s',a'))
         private void UpdateQ(string stateKey, QAction action, float reward, string nextStateKey)
         {
-            float oldQ = _qTable.GetQ(stateKey, action);
+            float Q = _qTable.GetQ(stateKey, action);
             float maxQNext = _qTable.GetMaxQ(nextStateKey);
             float target = reward + _params.gamma * maxQNext;
-            float newQ = (1 - _params.alpha) * oldQ + _params.alpha * target;
-            _qTable.SetQ(stateKey, action, newQ);
+            float Q2 = (1 - _params.alpha) * Q + _params.alpha * target;
+            _qTable.SetQ(stateKey, action, Q2);
         }
 
         // -100 si el enemigo captura al agente.
