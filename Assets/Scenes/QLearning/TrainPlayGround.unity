@@ -598,7 +598,7 @@ MonoBehaviour:
     alpha: 0.3
     epsilon: 0.5
     gamma: 0.9
-    episodes: 10000
+    episodes: 5000
     maxSteps: 8000
 --- !u!4 &430024629
 Transform:
@@ -645,7 +645,7 @@ Transform:
   m_GameObject: {fileID: 472187814}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.707107, z: -0, w: 0.7071066}
-  m_LocalPosition: {x: 14.550001, y: 0, z: 10.25}
+  m_LocalPosition: {x: 11.57, y: 0, z: 10.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2157,7 +2157,7 @@ Transform:
   m_GameObject: {fileID: 1428107357}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -1, z: -0, w: -0.00000077486027}
-  m_LocalPosition: {x: 14.75, y: 0, z: 12.47}
+  m_LocalPosition: {x: 6.78, y: 0, z: 7.52}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
