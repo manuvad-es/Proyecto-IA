@@ -598,9 +598,8 @@ MonoBehaviour:
     alpha: 0.3
     epsilon: 0.5
     gamma: 0.9
-    episodes: 5000
-    maxSteps: 1000
-    episodesBetweenSaves: 100
+    episodes: 10000
+    maxSteps: 8000
 --- !u!4 &430024629
 Transform:
   m_ObjectHideFlags: 0
