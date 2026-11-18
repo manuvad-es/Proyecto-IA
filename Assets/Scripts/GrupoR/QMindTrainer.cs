@@ -71,11 +71,7 @@ namespace GrupoR
         {
             bool lastEpisode = _params.episodes > 0 && CurrentEpisode >= _params.episodes;
 
-            // Guardamos la tabla cada N episodios y al terminar el entrenamiento
-            if (lastEpisode || CurrentEpisode % _params.episodesBetweenSaves == 0)
-            {
-                _qTable.SaveToCsv();
-            }
+            _qTable.SaveToCsv();
 
             OnEpisodeFinished?.Invoke(this, EventArgs.Empty);
 
@@ -104,10 +100,11 @@ namespace GrupoR
 
             // Calcula la recompensa
             float reward = ComputeReward(newAgentPos, newOtherPos);
+            bool terminal = IsTerminalState(newAgentPos, newOtherPos);
 
             if (train)
             {
-                UpdateQ(stateKey, action, reward, nextStateKey);
+                UpdateQ(stateKey, action, reward, nextStateKey, terminal);
             }
 
             // actualiza las posiciones
@@ -120,7 +117,7 @@ namespace GrupoR
             _returnAveraged = (_returnAveraged * (CurrentStep - 1) + reward) / CurrentStep;
 
             // Comprobación de si estamos en el fin de episodio
-            if (IsTerminalState(_agentPosition, _otherPosition))
+            if (terminal || (_params.maxSteps > 0 && CurrentStep >= _params.maxSteps))
             {
                 EndEpisode();
             }
@@ -128,9 +125,9 @@ namespace GrupoR
 
         #region Parte a implementar por el alumno
 
-        private string BuildStateKey(CellInfo agent, CellInfo other, WorldInfo _worldInfo)
+        private string BuildStateKey(CellInfo agent, CellInfo other, WorldInfo worldInfo)
         {
-            var state = new QState(agent, other, _worldInfo);
+            var state = new QState(agent, other, worldInfo);
             return state.ToKey();
         }
 
@@ -148,13 +145,17 @@ namespace GrupoR
         }
 
         // Q(s,a) = (1 - alpha) * Q(s,a) + alpha * (r + gamma * max_a' Q(s',a'))
-        private void UpdateQ(string stateKey, QAction action, float reward, string nextStateKey)
+        private void UpdateQ(string stateKey, QAction action, float reward, string nextStateKey, bool terminal)
         {
-            float Q = _qTable.GetQ(stateKey, action);
-            float maxQNext = _qTable.GetMaxQ(nextStateKey);
+            float qValue = _qTable.GetQ(stateKey, action);
+            float maxQNext = 0f;
+
+            if (!terminal)
+                maxQNext = _qTable.GetMaxQ(nextStateKey);
+
             float target = reward + _params.gamma * maxQNext;
-            float Q2 = (1 - _params.alpha) * Q + _params.alpha * target;
-            _qTable.SetQ(stateKey, action, Q2);
+            float newQValue = (1 - _params.alpha) * qValue + _params.alpha * target;
+            _qTable.SetQ(stateKey, action, newQValue);
         }
 
         // -100 si el enemigo captura al agente.
@@ -188,11 +189,11 @@ namespace GrupoR
 
             switch (action)
             {
-                case QAction.Up:    ny += 1; break;
-                case QAction.Down:  ny -= 1; break;
+                case QAction.Up: ny += 1; break;
+                case QAction.Down: ny -= 1; break;
                 case QAction.Right: nx += 1; break;
-                case QAction.Left:  nx -= 1; break;
-                case QAction.Stay:  return agentCell;
+                case QAction.Left: nx -= 1; break;
+                case QAction.Stay: return agentCell;
             }
 
             if (QState.IsBlocked(_worldInfo, nx, ny))
@@ -212,3 +213,4 @@ namespace GrupoR
         #endregion
     }
 }
+

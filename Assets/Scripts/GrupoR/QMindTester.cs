@@ -30,9 +30,9 @@ namespace GrupoR
         }
 
         // Misma cabecera e implementación que en QMindTrainer
-        private string BuildStateKey(CellInfo agent, CellInfo other, WorldInfo _worldInfo)
+        private string BuildStateKey(CellInfo agent, CellInfo other, WorldInfo worldInfo)
         {
-            var state = new QState(agent, other, _worldInfo);
+            var state = new QState(agent, other, worldInfo);
             return state.ToKey();
         }
 
@@ -44,11 +44,11 @@ namespace GrupoR
 
             switch (action)
             {
-                case QAction.Up:    ny += 1; break;
-                case QAction.Down:  ny -= 1; break;
+                case QAction.Up: ny += 1; break;
+                case QAction.Down: ny -= 1; break;
                 case QAction.Right: nx += 1; break;
-                case QAction.Left:  nx -= 1; break;
-                case QAction.Stay:  return agentCell;
+                case QAction.Left: nx -= 1; break;
+                case QAction.Stay: return agentCell;
             }
 
             if (QState.IsBlocked(_worldInfo, nx, ny))

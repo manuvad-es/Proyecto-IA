@@ -1,4 +1,5 @@
 using NavigationDJIA.World;
+using System;
 
 namespace GrupoR
 {
@@ -19,8 +20,9 @@ namespace GrupoR
             int dx = other.x - agent.x;
             int dy = other.y - agent.y;
 
-            DirX = Sign(dx);
-            DirY = Sign(dy);
+            DirX = Math.Sign(other.x - agent.x);
+            DirY = Math.Sign(other.y - agent.y);
+
             Distancia = Rango(System.Math.Abs(dx) + System.Math.Abs(dy));
 
             WallUp = IsBlocked(worldInfo, agent.x, agent.y + 1);
@@ -32,7 +34,22 @@ namespace GrupoR
         // Clave única del estado por ejemplo: "1,-1|2|0100"
         public string ToKey()
         {
-            return $"{DirX},{DirY}|{Distancia}|{B(WallUp)}{B(WallDown)}{B(WallLeft)}{B(WallRight)}";
+            string muros = "";
+
+            if (WallUp) muros += "1";
+            else muros += "0";
+
+            if (WallDown) muros += "1";
+            else muros += "0";
+
+            if (WallLeft) muros += "1";
+            else muros += "0";
+
+            if (WallRight) muros += "1";
+            else muros += "0";
+
+            return DirX + "," + DirY + "|" + Distancia + "|" + muros;
+
         }
 
         // Comprobar fuera del tablero o casilla con muro
@@ -44,8 +61,6 @@ namespace GrupoR
             return !worldInfo[x, y].Walkable;
         }
 
-        private static int Sign(int v) => v > 0 ? 1 : (v < 0 ? -1 : 0);
-
         private static int Rango(int d)
         {
             if (d <= 1) return 0;
@@ -54,7 +69,5 @@ namespace GrupoR
             if (d <= 7) return 3;
             return 4;
         }
-
-        private static char B(bool b) => b ? '1' : '0';
     }
 }
